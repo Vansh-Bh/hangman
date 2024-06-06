@@ -69,7 +69,6 @@ flutter:
     - assets\hangman_img5.jpg
     - assets\hangman_img6.jpg
     - assets\hangman_img7.jpg
-    - assets\google.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

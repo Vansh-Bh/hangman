@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hangman/pages/mulitplayer.dart';
-import 'package:hangman/pages/offline.dart';
+import 'package:hangman/pages/singleplayer.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Offline()),
+                        MaterialPageRoute(builder: (context) => Singleplayer()),
                       );
                     },
                     child: Text(

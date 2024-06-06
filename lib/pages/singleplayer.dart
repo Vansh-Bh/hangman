@@ -3,14 +3,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hangman/utils/alphabets.dart';
 
-class Offline extends StatefulWidget {
-  const Offline({Key? key}) : super(key: key);
+class Singleplayer extends StatefulWidget {
+  const Singleplayer({Key? key}) : super(key: key);
 
   @override
-  State<Offline> createState() => _OfflineState();
+  State<Singleplayer> createState() => _SingleplayerState();
 }
 
-class _OfflineState extends State<Offline> {
+class _SingleplayerState extends State<Singleplayer> {
   List<String>? words;
   String fetchedWord = "";
   List<String> guessedAlphabets = [];
