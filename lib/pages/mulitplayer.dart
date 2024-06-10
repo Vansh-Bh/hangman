@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hangman/pages/host_room.dart';
+import 'package:hangman/pages/join_room.dart';
 
 class Multiplayer extends StatefulWidget {
   const Multiplayer({super.key});
@@ -32,16 +34,20 @@ class _MultiplayerState extends State<Multiplayer> {
                 height: 80,
                 child: FittedBox(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/host-room');
+                    },
                     child: Text(
                       "Host Room",
                       style: TextStyle(
-                        fontFamily: 'Press-Start-2P',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          fontFamily: 'Press-Start-2P',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xffae0001)),
                     ),
-                    style: ElevatedButton.styleFrom(minimumSize: Size(10, 50)),
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: Size(10, 50),
+                        backgroundColor: Colors.black),
                   ),
                 ),
               ),
@@ -50,16 +56,23 @@ class _MultiplayerState extends State<Multiplayer> {
                 height: 80,
                 child: FittedBox(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => JoinRoom()),
+                      );
+                    },
                     child: Text(
                       "Join Room",
                       style: TextStyle(
-                        fontFamily: 'Press-Start-2P',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          fontFamily: 'Press-Start-2P',
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xffae0001)),
                     ),
-                    style: ElevatedButton.styleFrom(minimumSize: Size(10, 50)),
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: Size(10, 50),
+                        backgroundColor: Colors.black),
                   ),
                 ),
               ),
