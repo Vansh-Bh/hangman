@@ -10,7 +10,7 @@ var io = require('socket.io')(server);
 
 app.use(express.json());
 
-const DB = "mongodb+srv://vanshbhardwaj28134:f6Fx48s7xa5a8zmE@cluster0.lthprjf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const DB = "mongodb+srv://<username>:<password>@<cluster-url>/hangman?retryWrites=true&w=majority";
 
 io.on('connection', (socket) => {
     console.log(socket.id);
