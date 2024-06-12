@@ -4,9 +4,11 @@ import 'package:hangman/firebase_options.dart';
 import 'package:hangman/pages/home.dart';
 import 'package:hangman/pages/host_room.dart';
 import 'package:hangman/pages/join_room.dart';
+import 'package:hangman/pages/login_screen.dart';
 import 'package:hangman/pages/multiplayer_gamescreen.dart';
 import 'package:hangman/provider/client_state_provider.dart';
 import 'package:hangman/provider/game_state_provider.dart';
+import 'package:hangman/utils/user_controller.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +38,8 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => const Home(),
+          '/': (context) => UserController.user != null ? const Home() : const LoginPage(),
+          '/home': (context ) => const Home(),
           '/host-room': (context) => const HostRoom(),
           '/join-room': (context) => const JoinRoom(),
           '/game-screen': (context) => const GameScreen(),
