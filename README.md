@@ -40,3 +40,5 @@ Before you begin, ensure you have the following installed on your machine:
 2. Install flutter dependencies using `flutter pub get`
 
 3. Run the flutter app with `flutter run`
+
+  Make sure to update the `http://localhost:3000` with your local ip on which the server is running on in this [File](lib/utils/socket_client.dart)
