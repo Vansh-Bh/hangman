@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hangman/firebase_options.dart';
 import 'package:hangman/pages/home.dart';
 import 'package:hangman/pages/host_room.dart';
 import 'package:hangman/pages/join_room.dart';
@@ -8,7 +10,9 @@ import 'package:hangman/provider/game_state_provider.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 

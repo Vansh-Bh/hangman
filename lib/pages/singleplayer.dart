@@ -35,23 +35,26 @@ class _SingleplayerState extends State<Singleplayer> {
           child: Container(
             height: 180,
             width: 180,
-            decoration: BoxDecoration(color: Colors.grey),
+            decoration: BoxDecoration(color: Colors.black),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   title,
+                  style: TextStyle(color: Color(0xffae0001), fontSize: 30),
                 ),
                 Container(
                   margin: EdgeInsets.all(8.0),
                   width: 130,
-                  child: TextButton(
+                  child: FloatingActionButton.extended(
                     onPressed: () {
                       Navigator.pop(context);
                       resetGame();
                     },
-                    child: Center(
-                      child: Text("Play Again"),
+                    backgroundColor: Color(0xffae0001),
+                    label: Text(
+                      "Play Again",
+                      style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
                   ),
                 )
@@ -78,6 +81,7 @@ class _SingleplayerState extends State<Singleplayer> {
       setState(() {
         words = wordList.map((w) => w.toString().toUpperCase()).toList();
         fetchedWord = words!.isNotEmpty ? words![0] : "";
+        print(fetchedWord);
       });
     } else {
       throw Exception('Failed to load words');
@@ -120,7 +124,7 @@ class _SingleplayerState extends State<Singleplayer> {
           if (lives < 5) {
             lives += 1;
           } else {
-            dialog("YOU LOST!");
+            dialog("YOU LOST!!");
           }
         }
       });

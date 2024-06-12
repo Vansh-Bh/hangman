@@ -31,10 +31,11 @@ class SocketMethods {
       final gameStateProvider =
           Provider.of<GameStateProvider>(context, listen: false)
               .updateGameState(
-                  id: data['_id'],
-                  players: data['players'],
-                  isJoin: data['isJoin'],
-                  isOver: data['isOver']);
+        id: data['_id'],
+        players: data['players'],
+        isJoin: data['isJoin'],
+        isOver: data['isOver'],
+      );
       if (data['_id'].isNotEmpty && !_isPlaying) {
         Navigator.pushNamed(context, '/game-screen');
         _isPlaying = true;
@@ -83,4 +84,24 @@ class SocketMethods {
       );
     });
   }
+
+  void gameOver(BuildContext context, Function(bool) onGameOver) {
+    _socketClient.on('gameOver', (isWon) {
+      onGameOver(isWon);
+    });
+  }
+
+  void receiveWord(BuildContext context, Function(String) onWordReceived) {
+    _socketClient.on('receiveWord', (word) {
+      print('Received word: $word'); 
+      onWordReceived(word);
+    });
+  }
+
+  void sendWord(String gameId, String word) {
+    print('Sending word: $word'); 
+    _socketClient.emit('sendWord', {'gameId': gameId, 'word': word});
+  }
+
+  
 }

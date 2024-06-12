@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hangman/utils/socket_client.dart';
 import 'package:hangman/utils/socket_method.dart';
-import 'package:hangman/widgets.dart/custom_button.dart';
-import 'package:hangman/widgets.dart/custom_text.dart';
+import 'package:hangman/widgets/custom_button.dart';
+import 'package:hangman/widgets/custom_text.dart';
 
 class HostRoom extends StatefulWidget {
   const HostRoom({super.key});

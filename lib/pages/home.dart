@@ -30,14 +30,15 @@ class _HomeState extends State<Home> {
                   );
                 },
                 child: Text(
-                  "Offline",
+                  "Singleplayer",
                   style: TextStyle(
-                    fontFamily: 'Press-Start-2P',
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      fontFamily: 'Press-Start-2P',
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffae0001)),
                 ),
-                style: ElevatedButton.styleFrom(minimumSize: Size(10, 50)),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(10, 50), backgroundColor: Colors.black),
               ),
             ),
           ),
@@ -55,12 +56,13 @@ class _HomeState extends State<Home> {
                 child: Text(
                   "Multiplayer",
                   style: TextStyle(
-                    fontFamily: 'Press-Start-2P',
-                    fontSize: 19,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      fontFamily: 'Press-Start-2P',
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xffae0001)),
                 ),
-                style: ElevatedButton.styleFrom(minimumSize: Size(10, 50)),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(10, 50), backgroundColor: Colors.black),
               ),
             ),
           ),
