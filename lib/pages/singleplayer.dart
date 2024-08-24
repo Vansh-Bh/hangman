@@ -17,7 +17,7 @@ class _SingleplayerState extends State<Singleplayer> {
   Set<String> correctGuesses = {};
   Set<String> incorrectGuesses = {};
   int lives = 0;
-  List Images = [
+  List images = [
     "assets/hangman_img1.jpg",
     "assets/hangman_img2.jpg",
     "assets/hangman_img3.jpg",
@@ -35,24 +35,25 @@ class _SingleplayerState extends State<Singleplayer> {
           child: Container(
             height: 180,
             width: 180,
-            decoration: BoxDecoration(color: Colors.black),
+            decoration: const BoxDecoration(color: Colors.black),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   title,
-                  style: TextStyle(color: Color(0xffae0001), fontSize: 30),
+                  style:
+                      const TextStyle(color: Color(0xffae0001), fontSize: 30),
                 ),
                 Container(
-                  margin: EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(8.0),
                   width: 130,
                   child: FloatingActionButton.extended(
                     onPressed: () {
                       Navigator.pop(context);
                       resetGame();
                     },
-                    backgroundColor: Color(0xffae0001),
-                    label: Text(
+                    backgroundColor: const Color(0xffae0001),
+                    label: const Text(
                       "Play Again",
                       style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
@@ -104,7 +105,7 @@ class _SingleplayerState extends State<Singleplayer> {
       for (int i = 0; i < fetchedWord.length; i++) {
         String char = fetchedWord[i];
         if (guessedAlphabets.contains(char)) {
-          displayWord += char + " ";
+          displayWord += "$char ";
         } else {
           displayWord += "_ ";
         }
@@ -147,7 +148,7 @@ class _SingleplayerState extends State<Singleplayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffae0001),
+      backgroundColor: const Color(0xffae0001),
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -164,7 +165,7 @@ class _SingleplayerState extends State<Singleplayer> {
       body: Center(
         child: Column(
           children: [
-            Image(image: AssetImage(Images[lives])),
+            Image(image: AssetImage(images[lives])),
             Text(
               'lives : ${(6 - lives).toString()}',
               style: const TextStyle(
@@ -174,7 +175,7 @@ class _SingleplayerState extends State<Singleplayer> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 35,
             ),
             Text(
@@ -186,11 +187,11 @@ class _SingleplayerState extends State<Singleplayer> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             GridView.count(
               crossAxisCount: 7,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               children: alphabets.map((e) {
                 Color buttonColor;
                 if (correctGuesses.contains(e)) {
@@ -215,7 +216,7 @@ class _SingleplayerState extends State<Singleplayer> {
                       child: Center(
                         child: Text(
                           e,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: 'Press-Start-2P',
                             fontSize: 20,
                             fontWeight: FontWeight.bold,

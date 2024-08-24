@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Builder(

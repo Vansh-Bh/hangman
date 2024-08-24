@@ -39,6 +39,7 @@ dependencies:
   firebase_core: 
   firebase_auth: 
   google_sign_in: 
+  google_sign_in_web: ^0.12.3+2
 
 
 dev_dependencies:

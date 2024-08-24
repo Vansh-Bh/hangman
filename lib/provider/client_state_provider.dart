@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:hangman/models/client_state.dart';
+// import 'package:flutter/material.dart';
+// import 'package:hangman/models/client_state.dart';
 
-class ClientStateProvider extends ChangeNotifier {
-  ClientState _clientState = ClientState(
-    timer: {
-      'countDown': '',
-      'msg': '',
-    },
-  );
+// class ClientStateProvider extends ChangeNotifier {
+//   ClientState _clientState = ClientState(
+//     timer: {
+//       'countDown': '',
+//       'msg': '',
+//     },
+//   );
 
-  Map<String, dynamic> get clientState => _clientState.toJson();
+//   Map<String, dynamic> get clientState => _clientState.toJson();
 
-  setClientState(timer) {
-    _clientState = ClientState(timer: timer);
-    notifyListeners();
-  }
-}
+//   setClientState(timer) {
+//     _clientState = ClientState(timer: timer);
+//     notifyListeners();
+//   }
+// }

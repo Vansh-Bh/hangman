@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hangman/pages/host_room.dart';
 import 'package:hangman/pages/join_room.dart';
 
 class Multiplayer extends StatefulWidget {
@@ -16,14 +15,13 @@ class _MultiplayerState extends State<Multiplayer> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,
-          title: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Hangman",
-              ),
-            ],
-          ),
+          title: const Text('Hangman',
+              style: TextStyle(
+                fontFamily: 'Press-Start-2P',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              )),
+          centerTitle: true,
         ),
         body: Center(
           child: Column(
@@ -37,7 +35,10 @@ class _MultiplayerState extends State<Multiplayer> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/host-room');
                     },
-                    child: Text(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(10, 50),
+                        backgroundColor: Colors.black),
+                    child: const Text(
                       "Host Room",
                       style: TextStyle(
                           fontFamily: 'Press-Start-2P',
@@ -45,9 +46,6 @@ class _MultiplayerState extends State<Multiplayer> {
                           fontWeight: FontWeight.bold,
                           color: Color(0xffae0001)),
                     ),
-                    style: ElevatedButton.styleFrom(
-                        minimumSize: Size(10, 50),
-                        backgroundColor: Colors.black),
                   ),
                 ),
               ),
@@ -59,10 +57,14 @@ class _MultiplayerState extends State<Multiplayer> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => JoinRoom()),
+                        MaterialPageRoute(
+                            builder: (context) => const JoinRoom()),
                       );
                     },
-                    child: Text(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(10, 50),
+                        backgroundColor: Colors.black),
+                    child: const Text(
                       "Join Room",
                       style: TextStyle(
                           fontFamily: 'Press-Start-2P',
@@ -70,9 +72,6 @@ class _MultiplayerState extends State<Multiplayer> {
                           fontWeight: FontWeight.bold,
                           color: Color(0xffae0001)),
                     ),
-                    style: ElevatedButton.styleFrom(
-                        minimumSize: Size(10, 50),
-                        backgroundColor: Colors.black),
                   ),
                 ),
               ),
