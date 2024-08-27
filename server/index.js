@@ -20,6 +20,18 @@ const generateGameCode = () => {
 io.on("connection", (socket) => {
   console.log(`New connection: ${socket.id}`);
 
+  async function generateUniqueGameCode() {
+    let code;
+    let existingGame;
+  
+    do {
+      code = generateGameCode();
+      existingGame = await Game.findOne({ gameCode: code });
+    } while (existingGame);
+  
+    return code;
+  }
+
   socket.on("host-game", async ({ nickname }) => {
     try {
       let game = new Game();
@@ -30,7 +42,7 @@ io.on("connection", (socket) => {
       };
       game.players.push(player);
       game.isJoin = true;
-      game.gameCode = generateGameCode();
+      game.gameCode = await generateUniqueGameCode();
       game = await game.save();
 
       socket.join(game.gameCode);
