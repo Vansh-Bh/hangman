@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hangman/provider/client_state_provider.dart';
 import 'package:hangman/provider/game_state_provider.dart';
 import 'package:hangman/utils/alphabets.dart';
 import 'package:hangman/utils/socket_method.dart';
@@ -24,16 +23,18 @@ class _GameScreenState extends State<GameScreen> {
   String fetchedWord = '';
   bool isGameStarted = false;
   bool isSubmitButtonVisible = true;
-  Stopwatch _stopwatch = Stopwatch();
+  final Stopwatch _stopwatch = Stopwatch();
   int trophies = 0;
 
   @override
   void initState() {
     super.initState();
     _loadPoints();
-    _socketMethods.updateTimer(context);
+    // _socketMethods.updateTimer(context);
     _socketMethods.updateGame(context);
     _socketMethods.receiveWord(context, _onWordReceived);
+    _socketMethods.gameLost(context, _showDialog, "YOU LOST!!");
+    _socketMethods.gameWon(context, _showDialog, "YOU WON!!");
   }
 
   void _onWordReceived(String word) {
@@ -52,26 +53,13 @@ class _GameScreenState extends State<GameScreen> {
     print('Game started with word: $fetchedWord');
   }
 
-  void resetGame() {
-    setState(() {
-      lives = 0;
-      guessedAlphabets.clear();
-      correctGuesses.clear();
-      incorrectGuesses.clear();
-      fetchedWord = '';
-      isGameStarted = false;
-      isSubmitButtonVisible = true;
-      _stopwatch.reset();
-    });
-  }
-
   String wordChange() {
     String displayWord = "";
     if (fetchedWord.isNotEmpty) {
       for (int i = 0; i < fetchedWord.length; i++) {
         String char = fetchedWord[i];
         if (guessedAlphabets.contains(char)) {
-          displayWord += char + " ";
+          displayWord += "$char ";
         } else {
           displayWord += "_ ";
         }
@@ -80,7 +68,7 @@ class _GameScreenState extends State<GameScreen> {
     return displayWord;
   }
 
-  void alphabetCheck(String alphabet) {
+  void alphabetCheck(String alphabet, String gameId) {
     print('Alphabet checked: $alphabet');
     print(fetchedWord);
     if (fetchedWord.isNotEmpty) {
@@ -97,10 +85,20 @@ class _GameScreenState extends State<GameScreen> {
           } else {
             _stopwatch.stop();
             _updatePoints(-3);
+            _socketMethods.sendUnSuccessfulGuess(gameId);
             dialog("YOU LOST!");
           }
         }
       });
+
+      // print(guessedAlphabets.length);
+
+      // if (guessedAlphabets.length == fetchedWord.length) {
+      //   print("yes, successfulGuess");
+      //   _socketMethods.sendSuccessfulGuess(gameId);
+      // } else {
+      //   print("no successfulGuess");
+      // }
     }
 
     bool isWon = true;
@@ -114,34 +112,66 @@ class _GameScreenState extends State<GameScreen> {
     if (isWon) {
       _stopwatch.stop();
       _updatePoints(5);
+      _socketMethods.sendSuccessfulGuess(gameId);
       dialog(
           "YOU GUESSED RIGHT!! Time: ${_stopwatch.elapsed.inSeconds} seconds");
     }
+  }
+
+  void _showDialog(BuildContext context, String text) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => AlertDialog(
+        title: Text(text),
+        actions: [
+          TextButton(
+            onPressed: () {
+              _socketMethods.disconnect();
+              _resetGameState();
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+            child: const Text('Home', style: TextStyle(color: Colors.black)),
+          ),
+        ],
+      ),
+    );
   }
 
   void dialog(String message) {
     print('Dialog shown: $message');
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (_) => AlertDialog(
         title: Text(message),
         actions: [
           TextButton(
             onPressed: () {
+              _socketMethods.disconnect();
+              _resetGameState();
               Navigator.of(context).pop();
-              resetGame();
-            },
-            child: const Text('Restart'),
-          ),
-          TextButton(
-            onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Home'),
+            child: const Text('Home', style: TextStyle(color: Colors.black)),
           ),
         ],
       ),
     );
+  }
+
+  void _resetGameState() {
+    setState(() {
+      guessedAlphabets.clear();
+      correctGuesses.clear();
+      incorrectGuesses.clear();
+      fetchedWord = '';
+      lives = 0;
+      isGameStarted = false;
+      isSubmitButtonVisible = true;
+      _stopwatch.reset();
+    });
   }
 
   void _submitWord(BuildContext context, String gameId, String word) {
@@ -175,7 +205,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final game = Provider.of<GameStateProvider>(context);
-    final clientStateProvider = Provider.of<ClientStateProvider>(context);
+    // final clientStateProvider = Provider.of<ClientStateProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xffae0001),
@@ -223,7 +253,7 @@ class _GameScreenState extends State<GameScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             hintText: 'Enter a 5-letter word',
-                            hintStyle: TextStyle(fontSize: 15)),
+                            hintStyle: const TextStyle(fontSize: 15)),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -314,7 +344,7 @@ class _GameScreenState extends State<GameScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: InkWell(
                                 onTap: () {
-                                  alphabetCheck(e);
+                                  alphabetCheck(e, game.gameState['id']);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

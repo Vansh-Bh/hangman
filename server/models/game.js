@@ -23,10 +23,6 @@ const gameSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    startTime: {
-        type: Number,
-        default: null,
-    },
     gameCode: {
         type: String,
         unique: true

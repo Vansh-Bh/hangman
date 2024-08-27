@@ -17,6 +17,12 @@ class CustomButton extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+          minimumSize: Size(
+            !isHome ? width : width / 5,
+            50,
+          ),
+          backgroundColor: Colors.black),
       child: Text(
         text,
         style: const TextStyle(
@@ -24,12 +30,6 @@ class CustomButton extends StatelessWidget {
           color: Color(0xffae0001),
         ),
       ),
-      style: ElevatedButton.styleFrom(
-          minimumSize: Size(
-            !isHome ? width : width / 5,
-            50,
-          ),
-          backgroundColor: Colors.black),
     );
   }
 }

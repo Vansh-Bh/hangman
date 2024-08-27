@@ -54,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
                     )));
                   }
                 },
-                child: Image(image: AssetImage('assets/google.jpg')),
                 style: ElevatedButton.styleFrom(elevation: 8),
+                child: const Image(image: AssetImage('assets/google.jpg')),
               ),
             ),
           ),

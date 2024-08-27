@@ -7,7 +7,7 @@ class SocketClient {
   SocketClient._internal() {
     socket = IO.io('http://localhost:3000', <String, dynamic>{
       'transports': ['websocket'],
-      'autoConnect': false,
+      'autoConnect': true,
     });
     socket!.connect();
   }

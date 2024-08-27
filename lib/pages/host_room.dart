@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hangman/utils/socket_client.dart';
 import 'package:hangman/utils/socket_method.dart';
 import 'package:hangman/widgets/custom_button.dart';
 import 'package:hangman/widgets/custom_text.dart';
