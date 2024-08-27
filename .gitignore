@@ -45,4 +45,5 @@ app.*.map.json
 #server related
 server/node_modules
 server/.env
+server/package-lock.json
 

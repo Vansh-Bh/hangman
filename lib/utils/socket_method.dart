@@ -46,16 +46,6 @@ class SocketMethods {
     });
   }
 
-  // startTimer(playerId, gameID) {
-  //   _socketClient.emit(
-  //     'timer',
-  //     {
-  //       'playerId': playerId,
-  //       'gameID': gameID,
-  //     },
-  //   );
-  // }
-
   notCorrectGameListener(BuildContext context) {
     _socketClient.on(
       'notCorrectGame',
@@ -66,14 +56,6 @@ class SocketMethods {
       ),
     );
   }
-
-  // updateTimer(BuildContext context) {
-  //   final clientStateProvider =
-  //       Provider.of<ClientStateProvider>(context, listen: false);
-  //   _socketClient.on('timer', (data) {
-  //     clientStateProvider.setClientState(data);
-  //   });
-  // }
 
   updateGame(BuildContext context) {
     _socketClient.on('updateGame', (data) {
