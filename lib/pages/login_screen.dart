@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             "LOGIN",
             style: const TextStyle(
               fontFamily: 'Press-Start-2P',
@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
               color: Colors.white,
             ),
           ),
-          Image.asset('assets/hangman.jpg'),
+          Image.asset('assets/hangman.png'),
           SizedBox(
             width: 240,
             height: 80,

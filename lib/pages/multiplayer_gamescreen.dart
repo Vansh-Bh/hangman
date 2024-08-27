@@ -30,7 +30,6 @@ class _GameScreenState extends State<GameScreen> {
   void initState() {
     super.initState();
     _loadPoints();
-    // _socketMethods.updateTimer(context);
     _socketMethods.updateGame(context);
     _socketMethods.receiveWord(context, _onWordReceived);
     _socketMethods.gameLost(context, _showDialog, "YOU LOST!!");
@@ -38,7 +37,6 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _onWordReceived(String word) {
-    print('Word received in _onWordReceived: $word');
     setState(() {
       fetchedWord = word.toUpperCase();
       guessedAlphabets.clear();
@@ -50,7 +48,6 @@ class _GameScreenState extends State<GameScreen> {
       _stopwatch.reset();
       _stopwatch.start();
     });
-    print('Game started with word: $fetchedWord');
   }
 
   String wordChange() {
@@ -69,37 +66,22 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void alphabetCheck(String alphabet, String gameId) {
-    print('Alphabet checked: $alphabet');
-    print(fetchedWord);
-    if (fetchedWord.isNotEmpty) {
-      setState(() {
-        if (fetchedWord.contains(alphabet)) {
-          guessedAlphabets.add(alphabet);
-          correctGuesses.add(alphabet);
-          print('Correct guess: $alphabet');
+    setState(() {
+      if (fetchedWord.contains(alphabet)) {
+        guessedAlphabets.add(alphabet);
+        correctGuesses.add(alphabet);
+      } else {
+        incorrectGuesses.add(alphabet);
+        if (lives < 5) {
+          lives += 1;
         } else {
-          incorrectGuesses.add(alphabet);
-          print('Incorrect guess: $alphabet');
-          if (lives < 5) {
-            lives += 1;
-          } else {
-            _stopwatch.stop();
-            _updatePoints(-3);
-            _socketMethods.sendUnSuccessfulGuess(gameId);
-            dialog("YOU LOST!");
-          }
+          _stopwatch.stop();
+          _updatePoints(-3);
+          _socketMethods.sendUnsuccessfulGuess(gameId);
+          dialog("YOU LOST!");
         }
-      });
-
-      // print(guessedAlphabets.length);
-
-      // if (guessedAlphabets.length == fetchedWord.length) {
-      //   print("yes, successfulGuess");
-      //   _socketMethods.sendSuccessfulGuess(gameId);
-      // } else {
-      //   print("no successfulGuess");
-      // }
-    }
+      }
+    });
 
     bool isWon = true;
     for (int i = 0; i < fetchedWord.length; i++) {
@@ -123,7 +105,7 @@ class _GameScreenState extends State<GameScreen> {
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: Text(text),
+        title: Text(text, style: const TextStyle(color: Colors.white)),
         actions: [
           TextButton(
             onPressed: () {
@@ -132,7 +114,7 @@ class _GameScreenState extends State<GameScreen> {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
-            child: const Text('Home', style: TextStyle(color: Colors.black)),
+            child: const Text('Home', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -140,12 +122,11 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void dialog(String message) {
-    print('Dialog shown: $message');
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => AlertDialog(
-        title: Text(message),
+        title: Text(message, style: const TextStyle(color: Colors.white)),
         actions: [
           TextButton(
             onPressed: () {
@@ -154,7 +135,7 @@ class _GameScreenState extends State<GameScreen> {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
-            child: const Text('Home', style: TextStyle(color: Colors.black)),
+            child: const Text('Home', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -205,14 +186,13 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final game = Provider.of<GameStateProvider>(context);
-    // final clientStateProvider = Provider.of<ClientStateProvider>(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xffae0001),
+      backgroundColor: const Color(0xff212121),
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0.0,
+        backgroundColor: Colors.black,
+        elevation: 10,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -222,6 +202,7 @@ class _GameScreenState extends State<GameScreen> {
                 fontFamily: 'Press-Start-2P',
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
             const SizedBox(width: 20),
@@ -231,6 +212,7 @@ class _GameScreenState extends State<GameScreen> {
                 fontFamily: 'Press-Start-2P',
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
+                color: Colors.amber,
               ),
             ),
           ],
@@ -239,63 +221,115 @@ class _GameScreenState extends State<GameScreen> {
       body: SafeArea(
         child: Center(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (!isGameStarted && game.gameState['isJoin'])
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: _wordController,
-                        decoration: InputDecoration(
-                            fillColor: Colors.black,
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 600),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${game.gameState['players'].isNotEmpty ? game.gameState['players'][0]['nickname'] : 'Player1'} vs ',
+                                  style: const TextStyle(
+                                    fontFamily: 'Press-Start-2P',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  game.gameState['players'].length > 1 &&
+                                          game.gameState['players'][1] != null
+                                      ? game.gameState['players'][1]['nickname']
+                                      : 'Player2',
+                                  style: const TextStyle(
+                                    fontFamily: 'Press-Start-2P',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: _wordController,
+                          decoration: InputDecoration(
+                            fillColor: Colors.grey[800],
+                            filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                             hintText: 'Enter a 5-letter word',
-                            hintStyle: const TextStyle(fontSize: 15)),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black),
-                        onPressed: () {
-                          _submitWord(context, game.gameState['id'],
-                              _wordController.text);
-                        },
-                        child: Text(isSubmitButtonVisible
-                            ? 'Submit Word'
-                            : 'Submitting...'),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(children: [
-                        Expanded(
-                          child: Text(
-                            'Game Code: ${game.gameState['id']}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                            hintStyle: const TextStyle(color: Colors.white70),
+                            prefixIcon: const Icon(Icons.text_fields,
+                                color: Colors.white70),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.copy),
                           onPressed: () {
-                            Clipboard.setData(ClipboardData(
-                              text: game.gameState['id'],
-                            )).then((_) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Game Code - ${game.gameState['id']} copied to clipboard!',
-                                  ),
-                                ),
-                              );
-                            });
+                            _submitWord(context, game.gameState['id'],
+                                _wordController.text);
                           },
+                          child: Text(isSubmitButtonVisible
+                              ? 'Submit Word'
+                              : 'Submitting...'),
                         ),
-                      ])
-                    ],
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Game Code: ${game.gameState['id']}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.copy, color: Colors.white),
+                              onPressed: () {
+                                Clipboard.setData(ClipboardData(
+                                        text: game.gameState['id']))
+                                    .then((_) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Game Code - ${game.gameState['id']} copied to clipboard!',
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.black,
+                                    ),
+                                  );
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 )
               else if (isGameStarted)
@@ -303,17 +337,35 @@ class _GameScreenState extends State<GameScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Image(
-                          image:
-                              AssetImage('assets/hangman_img${lives + 1}.jpg'),
+                        Center(
+                          child: Container(
+                            margin: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(16.0),
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Image.asset(
+                              'assets/hangman_img${lives + 1}.png',
+                              height: MediaQuery.sizeOf(context).height * 0.3,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         Text(
                           'Lives: ${(6 - lives).toString()}',
                           style: const TextStyle(
                             fontFamily: 'Press-Start-2P',
-                            fontSize: 15,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: Colors.redAccent,
                           ),
                         ),
                         const SizedBox(height: 35),
@@ -321,7 +373,7 @@ class _GameScreenState extends State<GameScreen> {
                           wordChange(),
                           style: const TextStyle(
                             fontFamily: 'Press-Start-2P',
-                            fontSize: 20,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -336,20 +388,21 @@ class _GameScreenState extends State<GameScreen> {
                             if (correctGuesses.contains(e)) {
                               buttonColor = Colors.green;
                             } else if (incorrectGuesses.contains(e)) {
-                              buttonColor = Colors.grey;
+                              buttonColor = Colors.red;
                             } else {
-                              buttonColor = Colors.transparent;
+                              buttonColor = Colors.grey[800]!;
                             }
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: InkWell(
+                              child: GestureDetector(
                                 onTap: () {
                                   alphabetCheck(e, game.gameState['id']);
                                 },
-                                child: Container(
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
                                   decoration: BoxDecoration(
                                     color: buttonColor,
-                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderRadius: BorderRadius.circular(12.0),
                                     border: Border.all(color: Colors.white),
                                   ),
                                   child: Center(

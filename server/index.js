@@ -13,6 +13,10 @@ app.use(express.json());
 
 const DB = process.env.MONGODB_URI;
 
+const generateGameCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
 io.on("connection", (socket) => {
   console.log(`New connection: ${socket.id}`);
 
@@ -25,12 +29,12 @@ io.on("connection", (socket) => {
         isPartyLeader: true,
       };
       game.players.push(player);
-      game.isJoin = true; 
+      game.isJoin = true;
+      game.gameCode = generateGameCode();
       game = await game.save();
 
-      const gameId = game._id.toString();
-      socket.join(gameId);
-      io.to(gameId).emit("updateGame", game);
+      socket.join(game.gameCode);
+      io.to(game.gameCode).emit("updateGame", game);
     } catch (e) {
       console.log(`Error in host-game: ${e}`);
     }
@@ -38,19 +42,14 @@ io.on("connection", (socket) => {
 
   socket.on("join-game", async ({ nickname, gameId }) => {
     try {
-      if (!gameId.match(/^[0-9a-fA-F]{24}$/)) {
-        socket.emit("notCorrectGame", "Please enter a valid game ID");
-        return;
-      }
-      let game = await Game.findById(gameId);
+      let game = await Game.findOne({ gameCode: gameId });
 
       if (game && game.isJoin) {
-        const id = game._id.toString();
         let player = {
           nickname,
           socketID: socket.id,
         };
-        socket.join(id);
+        socket.join(gameId);
         game.players.push(player);
         game = await game.save();
         io.to(gameId).emit("updateGame", game);
@@ -73,7 +72,7 @@ io.on("connection", (socket) => {
         return;
       }
 
-      let game = await Game.findById(gameId);
+      let game = await Game.findOne({ gameCode: gameId });
 
       if (game) {
         let player = game.players.find(player => player.socketID === socket.id);
@@ -95,7 +94,7 @@ io.on("connection", (socket) => {
 
   socket.on("successfulGuess", async ({ gameId }) => {
     try {
-      let game = await Game.findById(gameId);
+      let game = await Game.findOne({ gameCode: gameId });
 
       if (game) {
         let opponent = game.players.find(player => player.socketID !== socket.id);
@@ -113,7 +112,7 @@ io.on("connection", (socket) => {
 
   socket.on("unsuccessfulGuess", async ({ gameId }) => {
     try {
-      let game = await Game.findById(gameId);
+      let game = await Game.findOne({ gameCode: gameId });
 
       if (game) {
         let opponent = game.players.find(player => player.socketID !== socket.id);
@@ -141,7 +140,7 @@ io.on("connection", (socket) => {
           await Game.deleteOne({ _id: game._id });
         } else {
           game = await game.save();
-          io.to(game._id.toString()).emit("updateGame", game);
+          io.to(game.gameCode).emit("updateGame", game);
         }
       }
     } catch (e) {

@@ -21,7 +21,7 @@ class SocketMethods {
   }
 
   joinGame(String gameId, String nickname) {
-    if (nickname.isNotEmpty && gameId.isNotEmpty) {
+    if (nickname.isNotEmpty && gameId.isNotEmpty && gameId.length == 6) {
       _socketClient.emit('join-game', {
         'nickname': nickname,
         'gameId': gameId,
@@ -34,12 +34,12 @@ class SocketMethods {
       final gameStateProvider =
           Provider.of<GameStateProvider>(context, listen: false)
               .updateGameState(
-        id: data['_id'],
+        id: data['gameCode'],
         players: data['players'],
         isJoin: data['isJoin'],
         isOver: data['isOver'],
       );
-      if (data['_id'].isNotEmpty && !_isPlaying) {
+      if (data['gameCode'].isNotEmpty && !_isPlaying) {
         Navigator.pushNamed(context, '/game-screen');
         _isPlaying = true;
       }
@@ -62,7 +62,7 @@ class SocketMethods {
       final gameStateProvider =
           Provider.of<GameStateProvider>(context, listen: false)
               .updateGameState(
-        id: data['_id'],
+        id: data['gameCode'],
         players: data['players'],
         isJoin: data['isJoin'],
         isOver: data['isOver'],
@@ -80,6 +80,7 @@ class SocketMethods {
       },
     );
   }
+
   void gameWon(BuildContext context,
       void Function(BuildContext, String) showDialog, String text) {
     _socketClient.on(
@@ -108,8 +109,12 @@ class SocketMethods {
     _socketClient.emit('successfulGuess', {'gameId': gameId});
   }
 
-  void sendUnSuccessfulGuess(String gameId) {
-    print('sendUnSuccessfulGuess: $gameId');
+  void sendUnsuccessfulGuess(String gameId) {
+    print('sendUnsuccessfulGuess: $gameId');
     _socketClient.emit('unsuccessfulGuess', {'gameId': gameId});
+  }
+
+  void disconnectPlayer(BuildContext context, String gameId) {
+    _socketClient.emit('disconnect', gameId);
   }
 }

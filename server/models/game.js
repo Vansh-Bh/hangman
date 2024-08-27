@@ -5,8 +5,6 @@ const playerSchema = new mongoose.Schema({
     nickname: String,
     isPartyLeader: Boolean,
     word: String,
-    finished: Boolean,
-    finishedTime: Number
 });
 
 const gameSchema = new mongoose.Schema({
@@ -25,7 +23,8 @@ const gameSchema = new mongoose.Schema({
     },
     gameCode: {
         type: String,
-        unique: true
+        unique: true,
+        required: true,
     }
 });
 

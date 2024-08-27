@@ -23,7 +23,7 @@ class CustomTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -33,6 +33,7 @@ class CustomTextField extends StatelessWidget {
         fillColor: Colors.black,
         hintText: hintText,
         hintStyle: const TextStyle(
+          color: Colors.grey,
           fontSize: 14,
           fontWeight: FontWeight.normal,
         ),

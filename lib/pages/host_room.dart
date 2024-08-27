@@ -36,14 +36,14 @@ class _HostRoomState extends State<HostRoom> {
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 600),
+          constraints: const BoxConstraints(maxWidth: 600),
           child: Container(
-            margin: EdgeInsets.all(12),
+            margin: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Host Room",
                   style: TextStyle(
                     fontFamily: 'Press-Start-2P',
@@ -56,7 +56,8 @@ class _HostRoomState extends State<HostRoom> {
                 ),
                 CustomTextField(
                     controller: _nameController,
-                    hintText: "Enter your nickname"),
+                    hintText: "Enter your nickname",
+                    ),
                 const SizedBox(
                   height: 30,
                 ),
