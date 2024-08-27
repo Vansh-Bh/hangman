@@ -18,13 +18,13 @@ class _SingleplayerState extends State<Singleplayer> {
   Set<String> incorrectGuesses = {};
   int lives = 0;
   List images = [
-    "assets/hangman_img1.jpg",
-    "assets/hangman_img2.jpg",
-    "assets/hangman_img3.jpg",
-    "assets/hangman_img4.jpg",
-    "assets/hangman_img5.jpg",
-    "assets/hangman_img6.jpg",
-    "assets/hangman_img7.jpg",
+    "assets/hangman_img1.png",
+    "assets/hangman_img2.png",
+    "assets/hangman_img3.png",
+    "assets/hangman_img4.png",
+    "assets/hangman_img5.png",
+    "assets/hangman_img6.png",
+    "assets/hangman_img7.png",
   ];
 
   dialog(String title) {
@@ -148,7 +148,7 @@ class _SingleplayerState extends State<Singleplayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffae0001),
+      // backgroundColor: const Color(0xffae0001),
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.transparent,

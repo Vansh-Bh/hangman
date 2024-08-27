@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
           ),
         ),
         drawer: Drawer(
-          backgroundColor: Color(0xffae0001),
+          backgroundColor: const Color(0xff2c2c2c),
           child: ListView(
             children: [
               DrawerHeader(
@@ -46,12 +46,12 @@ class _HomeState extends State<Home> {
                     foregroundImage:
                         NetworkImage(UserController.user?.photoURL ?? ''),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8,
                   ),
                   Text(
                     UserController.user?.displayName ?? '',
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ]),
               ),
@@ -67,12 +67,12 @@ class _HomeState extends State<Home> {
                         ));
                       }
                     },
-                    child: Text(
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                    child: const Text(
                       "Log Out",
                       style: TextStyle(fontSize: 16),
                     ),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.black),
                   )
                 ],
               )
@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/hangman.jpg'),
+              Image.asset('assets/hangman.png'),
               SizedBox(
                 width: 240,
                 height: 80,
@@ -92,10 +92,14 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Singleplayer()),
+                        MaterialPageRoute(
+                            builder: (context) => const Singleplayer()),
                       );
                     },
-                    child: Text(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(10, 50),
+                        backgroundColor: Colors.black),
+                    child: const Text(
                       "Singleplayer",
                       style: TextStyle(
                           fontFamily: 'Press-Start-2P',
@@ -103,9 +107,6 @@ class _HomeState extends State<Home> {
                           fontWeight: FontWeight.bold,
                           color: Color(0xffae0001)),
                     ),
-                    style: ElevatedButton.styleFrom(
-                        minimumSize: Size(10, 50),
-                        backgroundColor: Colors.black),
                   ),
                 ),
               ),
@@ -117,10 +118,14 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Multiplayer()),
+                        MaterialPageRoute(
+                            builder: (context) => const Multiplayer()),
                       );
                     },
-                    child: Text(
+                    style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(10, 50),
+                        backgroundColor: Colors.black),
+                    child: const Text(
                       "Multiplayer",
                       style: TextStyle(
                           fontFamily: 'Press-Start-2P',
@@ -128,9 +133,6 @@ class _HomeState extends State<Home> {
                           fontWeight: FontWeight.bold,
                           color: Color(0xffae0001)),
                     ),
-                    style: ElevatedButton.styleFrom(
-                        minimumSize: Size(10, 50),
-                        backgroundColor: Colors.black),
                   ),
                 ),
               ),
