@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hangman/utils/alphabets.dart';
+import 'package:lottie/lottie.dart';
 
 class Singleplayer extends StatefulWidget {
   const Singleplayer({Key? key}) : super(key: key);
@@ -17,7 +18,9 @@ class _SingleplayerState extends State<Singleplayer> {
   Set<String> correctGuesses = {};
   Set<String> incorrectGuesses = {};
   int lives = 0;
-  List images = [
+  bool isLoading = true; // Track loading state
+
+  List<String> images = [
     "assets/hangman_img1.png",
     "assets/hangman_img2.png",
     "assets/hangman_img3.png",
@@ -26,46 +29,6 @@ class _SingleplayerState extends State<Singleplayer> {
     "assets/hangman_img6.png",
     "assets/hangman_img7.png",
   ];
-
-  dialog(String title) {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          child: Container(
-            height: 180,
-            width: 180,
-            decoration: const BoxDecoration(color: Colors.black),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style:
-                      const TextStyle(color: Color(0xffae0001), fontSize: 30),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(8.0),
-                  width: 130,
-                  child: FloatingActionButton.extended(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      resetGame();
-                    },
-                    backgroundColor: const Color(0xffae0001),
-                    label: const Text(
-                      "Play Again",
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   void initState() {
@@ -83,6 +46,7 @@ class _SingleplayerState extends State<Singleplayer> {
         words = wordList.map((w) => w.toString().toUpperCase()).toList();
         fetchedWord = words!.isNotEmpty ? words![0] : "";
         print(fetchedWord);
+        isLoading = false; // Update loading state
       });
     } else {
       throw Exception('Failed to load words');
@@ -95,8 +59,9 @@ class _SingleplayerState extends State<Singleplayer> {
       guessedAlphabets.clear();
       correctGuesses.clear();
       incorrectGuesses.clear();
-      _fetchWords();
+      isLoading = true; // Set loading state to true
     });
+    _fetchWords(); // Fetch new words
   }
 
   String wordChange() {
@@ -122,7 +87,7 @@ class _SingleplayerState extends State<Singleplayer> {
           correctGuesses.add(alphabet);
         } else {
           incorrectGuesses.add(alphabet);
-          if (lives < 5) {
+          if (lives < 6) {
             lives += 1;
           } else {
             dialog("YOU LOST!!");
@@ -145,10 +110,78 @@ class _SingleplayerState extends State<Singleplayer> {
     }
   }
 
+  void dialog(String title) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Container(
+            height: 220,
+            width: 300,
+            decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: BorderRadius.circular(15.0),
+                border: Border.all(color: Colors.grey[400]!)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style:
+                      const TextStyle(color: Color(0xffae0001), fontSize: 30),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(8.0),
+                      width: 130,
+                      child: FloatingActionButton.extended(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          resetGame();
+                        },
+                        backgroundColor: const Color(0xffae0001),
+                        label: const Text(
+                          "Play Again",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.all(8.0),
+                      width: 130,
+                      child: FloatingActionButton.extended(
+                        onPressed: () {
+                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                        },
+                        backgroundColor: const Color(0xffae0001),
+                        label: const Text(
+                          "Home",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                if (title == "YOU LOST!!") Text('The word was $fetchedWord')
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: const Color(0xffae0001),
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -163,74 +196,77 @@ class _SingleplayerState extends State<Singleplayer> {
         ),
       ),
       body: Center(
-        child: Column(
-          children: [
-            Image(image: AssetImage(images[lives])),
-            Text(
-              'lives : ${(6 - lives).toString()}',
-              style: const TextStyle(
-                fontFamily: 'Press-Start-2P',
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(
-              height: 35,
-            ),
-            Text(
-              wordChange(),
-              style: const TextStyle(
-                fontFamily: 'Press-Start-2P',
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 40),
-            GridView.count(
-              crossAxisCount: 7,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              children: alphabets.map((e) {
-                Color buttonColor;
-                if (correctGuesses.contains(e)) {
-                  buttonColor = Colors.green;
-                } else if (incorrectGuesses.contains(e)) {
-                  buttonColor = Colors.grey;
-                } else {
-                  buttonColor = Colors.transparent;
-                }
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: InkWell(
-                    onTap: () {
-                      alphabetCheck(e);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: buttonColor,
-                        borderRadius: BorderRadius.circular(10.0),
-                        border: Border.all(color: Colors.white),
-                      ),
-                      child: Center(
-                        child: Text(
-                          e,
-                          style: const TextStyle(
-                            fontFamily: 'Press-Start-2P',
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+        child: isLoading
+            ? Lottie.asset(
+                'assets/animations/loading_2.json')
+            : Column(
+                children: [
+                  Image.asset(images[lives],
+                      height: MediaQuery.sizeOf(context).height * 0.4,
+                      fit: BoxFit.cover),
+                  Text(
+                    'Lives : ${(6 - lives).toString()}',
+                    style: const TextStyle(
+                      fontFamily: 'Press-Start-2P',
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+                  const SizedBox(height: 35),
+                  Text(
+                    wordChange(),
+                    style: const TextStyle(
+                      fontFamily: 'Press-Start-2P',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 40),
+                  GridView.count(
+                    crossAxisCount: 7,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: alphabets.map((e) {
+                      Color buttonColor;
+                      if (correctGuesses.contains(e)) {
+                        buttonColor = Colors.green;
+                      } else if (incorrectGuesses.contains(e)) {
+                        buttonColor = Colors.grey;
+                      } else {
+                        buttonColor = Colors.transparent;
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () {
+                            alphabetCheck(e);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: buttonColor,
+                              borderRadius: BorderRadius.circular(10.0),
+                              border: Border.all(color: Colors.white),
+                            ),
+                            child: Center(
+                              child: Text(
+                                e,
+                                style: const TextStyle(
+                                  fontFamily: 'Press-Start-2P',
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
       ),
     );
   }

@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hangman/firebase_options.dart';
 import 'package:hangman/pages/home.dart';
 import 'package:hangman/pages/host_room.dart';
 import 'package:hangman/pages/join_room.dart';
+import 'package:hangman/pages/login_screen.dart';
 import 'package:hangman/pages/multiplayer_gamescreen.dart';
 import 'package:hangman/provider/game_state_provider.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +31,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: Colors.amber,
-            primary: const Color(0xffae0001), 
+            primary: const Color(0xffae0001),
             onSurface: Colors.white,
           ),
           scaffoldBackgroundColor: const Color(0xff1e1e1e),
@@ -77,15 +79,34 @@ class MyApp extends StatelessWidget {
             unselectedItemColor: Colors.white70,
           ),
         ),
-        initialRoute: '/',
+        home: const Auth(),
         routes: {
-          '/': (context) => const Home(),
           '/home': (context) => const Home(),
           '/host-room': (context) => const HostRoom(),
           '/join-room': (context) => const JoinRoom(),
           '/game-screen': (context) => const GameScreen(),
         },
       ),
+    );
+  }
+}
+
+class Auth extends StatelessWidget {
+  const Auth({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasData) {
+          return const Home();
+        } else {
+          return const LoginPage();
+        }
+      },
     );
   }
 }

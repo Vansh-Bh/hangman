@@ -40,6 +40,9 @@ dependencies:
   firebase_auth: 
   google_sign_in: 
   google_sign_in_web: ^0.12.3+2
+  riverpod: ^2.5.1
+  flutter_riverpod: ^2.5.1
+  lottie: ^3.1.2
 
 
 dev_dependencies:
@@ -74,6 +77,7 @@ flutter:
     - assets/hangman_img6.png
     - assets/hangman_img7.png
     - assets/google.jpg
+    - assets/animations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

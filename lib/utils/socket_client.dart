@@ -4,8 +4,16 @@ class SocketClient {
   IO.Socket? socket;
   static SocketClient? _instance;
 
+  // SocketClient._internal() {
+  //   socket = IO.io('https://hangman-g0n5.onrender.com', <String, dynamic>{
+  //     'transports': ['websocket'],
+  //     'autoConnect': true,
+  //   });
+  //   socket!.connect();
+  // }
+
   SocketClient._internal() {
-    socket = IO.io('http://172.16.137.243:3000', <String, dynamic>{
+    socket = IO.io('http://localhost:3000', <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': true,
     });
