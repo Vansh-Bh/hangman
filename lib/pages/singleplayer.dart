@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hangman/pages/hangman_painter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:hangman/utils/alphabets.dart';
@@ -11,29 +12,37 @@ class Singleplayer extends StatefulWidget {
   State<Singleplayer> createState() => _SingleplayerState();
 }
 
-class _SingleplayerState extends State<Singleplayer> {
+class _SingleplayerState extends State<Singleplayer>
+    with SingleTickerProviderStateMixin {
   List<String>? words;
   String fetchedWord = "";
   List<String> guessedAlphabets = [];
   Set<String> correctGuesses = {};
   Set<String> incorrectGuesses = {};
   int lives = 0;
-  bool isLoading = true; // Track loading state
-
-  List<String> images = [
-    "assets/hangman_img1.png",
-    "assets/hangman_img2.png",
-    "assets/hangman_img3.png",
-    "assets/hangman_img4.png",
-    "assets/hangman_img5.png",
-    "assets/hangman_img6.png",
-    "assets/hangman_img7.png",
-  ];
+  bool isLoading = true;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(
+          milliseconds: 1000),
+    )..addListener(() {
+        setState(() {});
+      });
+
+    _animation = Tween<double>(begin: 0, end: 1).animate(_animationController);
     _fetchWords();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchWords() async {
@@ -46,7 +55,7 @@ class _SingleplayerState extends State<Singleplayer> {
         words = wordList.map((w) => w.toString().toUpperCase()).toList();
         fetchedWord = words!.isNotEmpty ? words![0] : "";
         print(fetchedWord);
-        isLoading = false; // Update loading state
+        isLoading = false;
       });
     } else {
       throw Exception('Failed to load words');
@@ -59,9 +68,9 @@ class _SingleplayerState extends State<Singleplayer> {
       guessedAlphabets.clear();
       correctGuesses.clear();
       incorrectGuesses.clear();
-      isLoading = true; // Set loading state to true
+      isLoading = true;
     });
-    _fetchWords(); // Fetch new words
+    _fetchWords();
   }
 
   String wordChange() {
@@ -89,12 +98,15 @@ class _SingleplayerState extends State<Singleplayer> {
           incorrectGuesses.add(alphabet);
           if (lives < 6) {
             lives += 1;
+            _animationController.reset();
+            _animationController.forward();
           } else {
             dialog("YOU LOST!!");
           }
         }
       });
     }
+
     bool isWon = true;
     for (int i = 0; i < fetchedWord.length; i++) {
       String char = fetchedWord[i];
@@ -197,13 +209,14 @@ class _SingleplayerState extends State<Singleplayer> {
       ),
       body: Center(
         child: isLoading
-            ? Lottie.asset(
-                'assets/animations/loading_2.json')
+            ? Lottie.asset('assets/animations/loading_2.json')
             : Column(
                 children: [
-                  Image.asset(images[lives],
-                      height: MediaQuery.sizeOf(context).height * 0.4,
-                      fit: BoxFit.cover),
+                  CustomPaint(
+                    size: Size(MediaQuery.of(context).size.width,
+                        MediaQuery.of(context).size.height * 0.4),
+                    painter: HangmanPainter(lives, _animation.value),
+                  ),
                   Text(
                     'Lives : ${(6 - lives).toString()}',
                     style: const TextStyle(

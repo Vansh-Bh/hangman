@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hangman/pages/fetch_previous_games.dart';
 import 'package:hangman/pages/login_screen.dart';
 import 'package:hangman/pages/mulitplayer.dart';
 import 'package:hangman/pages/singleplayer.dart';
@@ -37,28 +38,56 @@ class _HomeState extends State<Home> {
         ),
         drawer: Drawer(
           backgroundColor: const Color(0xff2c2c2c),
-          child: ListView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment
+                .spaceBetween, // Space between header and footer
             children: [
-              DrawerHeader(
-                child: Column(children: [
-                  CircleAvatar(
-                    radius: 52,
-                    foregroundImage:
-                        NetworkImage(UserController.user?.photoURL ?? ''),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                    UserController.user?.displayName ?? '',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                ]),
-              ),
+              // Header
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton(
+                  DrawerHeader(
+                    child: Column(children: [
+                      CircleAvatar(
+                        radius: 52,
+                        foregroundImage:
+                            NetworkImage(UserController.user?.photoURL ?? ''),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        UserController.user?.displayName ?? '',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ]),
+                  ),
+                ],
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(20), // Adds padding to the button
+                child: SizedBox(
+                  width: 180, // Adjust the width to shorten the button
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PreviousGamesScreen()));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
+                    child: const Text(
+                      "Replays",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Log Out Button
+              Padding(
+                padding: const EdgeInsets.all(20), // Adds padding to the button
+                child: SizedBox(
+                  width: 180, // Adjust the width to shorten the button
+                  child: ElevatedButton(
                     onPressed: () async {
                       await UserController.signOut();
                       if (mounted) {
@@ -67,18 +96,44 @@ class _HomeState extends State<Home> {
                         ));
                       }
                     },
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                    ),
                     child: const Text(
                       "Log Out",
                       style: TextStyle(fontSize: 16),
                     ),
-                  )
-                ],
-              )
+                  ),
+                ),
+              ),
             ],
           ),
         ),
+
+        //       Column(
+        //         mainAxisAlignment: MainAxisAlignment.end,
+        //         children: [
+        //           ElevatedButton(
+        //             onPressed: () async {
+        //               await UserController.signOut();
+        //               if (mounted) {
+        //                 Navigator.of(context).pushReplacement(MaterialPageRoute(
+        //                   builder: (context) => const LoginPage(),
+        //                 ));
+        //               }
+        //             },
+        //             style:
+        //                 ElevatedButton.styleFrom(backgroundColor: Colors.black),
+        //             child: const Text(
+        //               "Log Out",
+        //               style: TextStyle(fontSize: 16),
+        //             ),
+        //           )
+        //         ],
+        //       )
+        //     ],
+        //   ),
+        // ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,8 +147,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const Singleplayer()),
+                        MaterialPageRoute(builder: (context) => Singleplayer()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

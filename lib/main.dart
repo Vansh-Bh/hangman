@@ -67,16 +67,11 @@ class MyApp extends StatelessWidget {
             color: Color(0xff212121),
             titleTextStyle: TextStyle(
               fontFamily: 'Press-Start-2P',
-              fontSize: 24,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
             iconTheme: IconThemeData(color: Colors.white),
-          ),
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: Color(0xff212121),
-            selectedItemColor: Colors.amber,
-            unselectedItemColor: Colors.white70,
           ),
         ),
         home: const Auth(),
