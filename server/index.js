@@ -140,25 +140,25 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", async () => {
-    try {
-      console.log(`Player disconnected: ${socket.id}`);
-      let game = await Game.findOne({ "players.socketID": socket.id });
+  // socket.on("disconnect", async () => {
+  //   try {
+  //     console.log(`Player disconnected: ${socket.id}`);
+  //     let game = await Game.findOne({ "players.socketID": socket.id });
 
-      if (game) {
-        game.players = game.players.filter(player => player.socketID !== socket.id);
+  //     if (game) {
+  //       game.players = game.players.filter(player => player.socketID !== socket.id);
 
-        if (game.players.length === 0) {
-          await Game.deleteOne({ _id: game._id });
-        } else {
-          game = await game.save();
-          io.to(game.gameCode).emit("updateGame", game);
-        }
-      }
-    } catch (e) {
-      console.log(`Error on disconnect: ${e}`);
-    }
-  });
+  //       if (game.players.length === 0) {
+  //         await Game.deleteOne({ _id: game._id });
+  //       } else {
+  //         game = await game.save();
+  //         io.to(game.gameCode).emit("updateGame", game);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     console.log(`Error on disconnect: ${e}`);
+  //   }
+  // });
 });
 
 mongoose.connect(DB)
@@ -171,4 +171,15 @@ mongoose.connect(DB)
 
 server.listen(port, "0.0.0.0", () => {
   console.log(`Server started and running on port ${port}`);
+});
+
+app.get("/previous-games", async (req, res) => {
+  try {
+    const games = await Game.find({ isJoin: false }); 
+
+    res.status(200).json(games);
+  } catch (e) {
+    console.error(`Error fetching previous games: ${e}`);
+    res.status(500).json({ message: "Failed to fetch previous games." });
+  }
 });
